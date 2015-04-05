@@ -29,7 +29,31 @@ val z = id(Array(1,2,3,4))
 
 
 class Covariant[+A]
-val cv1 : Covariant[AnyRef]
-    = new Covariant[String]
-//val cv2 : Covariant[String]
-//    = new Covariant[AnyRef]
+val cv1 : Covariant[AnyRef] = new Covariant[String]
+//val cv2 : Covariant[String] = new Covariant[AnyRef]
+
+class Convariant[-A]
+val cnv1: Convariant[String] = new Convariant[AnyRef]
+//val cnv2: Convariant[AnyRef] = new Convariant[String]
+
+// trait Function1 [-T1, +R] extends AnyRef
+class Animal                 {          val sound = "rustle" }
+class Bird    extends Animal { override val sound = "call"   }
+class Chicken extends Bird   { override val sound = "cluck"  }
+
+// ContraVariant for Parameter (Bird < Animal)
+val getTweeet: ( Bird=>String ) = {
+  (a: Animal) => a.sound
+}
+// CoVariant for Return (Bird > Chicken)
+val hatch: ( ()=>Bird ) = {
+  () => new Chicken
+}
+
+
+/* Bound */
+
+//def cacophony[T](things: Seq[T]) = things.map(_.sound)
+def biophony[T <: Animal](things: Seq[T]) = things.map(_.sound)
+biophony(Seq(new Chicken, new Bird))
+
